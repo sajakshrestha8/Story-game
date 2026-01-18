@@ -12,7 +12,7 @@ canvas.height = 500;
 const cHeight = 50;
 const cWidth = 20;
 
-const character = new Man(cHeight, cWidth, 10, canvas.height - cHeight);
+const character = new Man(cHeight, cWidth, 10, canvas.height - cHeight, 0);
 const obstacle = new Obstacle(50, 50, canvas.width - 50, canvas.height - 50);
 const switchs = new Switch(10, 30, 50, canvas.height - 10);
 
@@ -37,13 +37,13 @@ function render() {
   obstacle.draw(ctx);
   switchs.draw(ctx);
 
-  // collision
   if (!isSwitchClicked && isColliding(character, switchs)) {
     isSwitchClicked = true;
     console.log("Switch activated!");
   }
 
   if (isSwitchClicked) {
+    ctx.clearRect(switchs.x, switchs.y, switchs.w, switchs.h);
     ctx.fillStyle = "green";
     ctx.fillRect(50, canvas.height - 5, 30, 5);
   }
@@ -63,10 +63,17 @@ window.addEventListener("keydown", (e) => {
     case "d":
       character.moveRight();
       break;
+
+    case "ArrowUp":
+    case "w":
+    case "space":
+      character.jump();
+      break;
   }
 });
 
 function gameLoop() {
+  character.update();
   render();
   requestAnimationFrame(gameLoop);
 }
