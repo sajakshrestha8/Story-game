@@ -1,4 +1,5 @@
 import { Door } from "./objects/door.js";
+import { Floor } from "./objects/floor.js";
 import Man from "./objects/man.js";
 import Obstacle from "./objects/obstacle.js";
 import Switch from "./objects/switch.js";
@@ -13,15 +14,21 @@ let keys = {
   right: false,
 };
 
-canvas.width = 500;
-canvas.height = 500;
+canvas.width = 1000;
+canvas.height = 1000;
 const cHeight = 50;
-const cWidth = 20;
+const cWidth = 30;
 
-const character = new Man(cHeight, cWidth, 10, canvas.height - cHeight, 0);
-const obstacle = new Obstacle(50, 50, canvas.width - 50, canvas.height - 50);
-const switchs = new Switch(10, 30, 300, canvas.height - 10);
-const door = new Door(50, 30, 200, canvas.height - 50);
+const character = new Man(cHeight, cWidth, 10, canvas.height - cHeight - 50, 0);
+const obstacle = new Obstacle(
+  50,
+  50,
+  canvas.width - 50,
+  canvas.height - 50 - 50
+);
+const switchs = new Switch(10, 30, 500, canvas.height - 10 - 50);
+const door = new Door(50, 30, 200, canvas.height - 50 - 50);
+const floor = new Floor(30, canvas.width, 0, canvas.height - 50);
 
 function isColliding(a, b) {
   return (
@@ -40,6 +47,7 @@ function drawHitbox(obj) {
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  floor.draw(ctx);
   door.draw(ctx);
   obstacle.draw(ctx);
   switchs.draw(ctx);
@@ -54,7 +62,7 @@ function render() {
     ctx.clearRect(switchs.x, switchs.y, switchs.width, switchs.height);
     door.openDoor();
     ctx.fillStyle = "green";
-    ctx.fillRect(300, canvas.height - 5, 30, 5);
+    ctx.fillRect(500, canvas.height - 5 - 50, 30, 5);
     obstacle.moveObstacle();
   }
 
@@ -63,11 +71,11 @@ function render() {
     !isColliding(character, door) &&
     isColliding(character, obstacle)
   ) {
-    console.log("game over");
+    alert("game over");
   }
 
   if (isSwitchClicked && isDoorOpen && isColliding(character, door)) {
-    console.log("Level complete vayo aaba chai");
+    confirm("Level has been completed. Wanna move to next level?");
   }
   drawHitbox(door);
 }
@@ -114,10 +122,10 @@ window.addEventListener("keyup", (e) => {
 
 function gameLoop() {
   if (keys.left === true && keys.right === false) {
-    character.moveLeft();
+    character.moveLeft(1);
   }
   if (keys.left === false && keys.right === true) {
-    character.moveRight();
+    character.moveRight(1);
   }
   door.update();
   character.update();
