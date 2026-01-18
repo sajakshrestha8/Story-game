@@ -6,7 +6,12 @@ import Switch from "./objects/switch.js";
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 let isSwitchClicked = false;
+let isDoorOpen = false;
 console.log(ctx);
+let keys = {
+  left: false,
+  right: false,
+};
 
 canvas.width = 500;
 canvas.height = 500;
@@ -42,7 +47,7 @@ function render() {
 
   if (!isSwitchClicked && isColliding(character, switchs)) {
     isSwitchClicked = true;
-    console.log("Switch activated!");
+    isDoorOpen = true;
   }
 
   if (isSwitchClicked) {
@@ -52,18 +57,51 @@ function render() {
     ctx.fillRect(300, canvas.height - 5, 30, 5);
     obstacle.moveObstacle();
   }
+
+  if (
+    isSwitchClicked &&
+    !isColliding(character, door) &&
+    isColliding(character, obstacle)
+  ) {
+    console.log("game over");
+  }
+
+  if (isSwitchClicked && isDoorOpen && isColliding(character, door)) {
+    console.log("Level complete vayo aaba chai");
+  }
+  drawHitbox(door);
 }
 
 window.addEventListener("keydown", (e) => {
   switch (e.key) {
     case "ArrowLeft":
     case "a":
-      character.moveLeft();
+      keys.left = true;
       break;
 
     case "ArrowRight":
     case "d":
-      character.moveRight();
+      keys.right = true;
+      break;
+
+    case "ArrowUp":
+    case "w":
+    case "Space":
+      character.jump();
+      break;
+  }
+});
+
+window.addEventListener("keyup", (e) => {
+  switch (e.key) {
+    case "ArrowLeft":
+    case "a":
+      keys.left = false;
+      break;
+
+    case "ArrowRight":
+    case "d":
+      keys.right = false;
       break;
 
     case "ArrowUp":
@@ -75,6 +113,12 @@ window.addEventListener("keydown", (e) => {
 });
 
 function gameLoop() {
+  if (keys.left === true && keys.right === false) {
+    character.moveLeft();
+  }
+  if (keys.left === false && keys.right === true) {
+    character.moveRight();
+  }
   door.update();
   character.update();
   render();

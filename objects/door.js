@@ -23,7 +23,7 @@ export class Door {
 
   update() {
     if (this.state === "opening") {
-      this.currentHeight = this.currentHeight - 1.5;
+      this.currentHeight = this.currentHeight - 1;
       if (this.currentHeight <= 0) {
         this.currentHeight = 0;
         this.state = "opened";

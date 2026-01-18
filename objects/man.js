@@ -16,11 +16,11 @@ export default class Man {
   }
 
   moveLeft() {
-    this.x = this.x - 10;
+    this.x = this.x - 1;
   }
 
   moveRight() {
-    this.x = this.x + 10;
+    this.x = this.x + 1;
   }
 
   update() {

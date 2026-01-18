@@ -17,7 +17,7 @@ export default class Obstacle {
   }
 
   moveObstacle() {
-    this.x = this.x - 2;
+    this.x = this.x - 0.5;
   }
 
   draw(ctx) {
