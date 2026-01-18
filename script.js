@@ -8,6 +8,7 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 let isSwitchClicked = false;
 let isDoorOpen = false;
+let characterSpeed = 1;
 console.log(ctx);
 let keys = {
   left: false,
@@ -64,6 +65,7 @@ function render() {
     ctx.fillStyle = "green";
     ctx.fillRect(500, canvas.height - 5 - 50, 30, 5);
     obstacle.moveObstacle();
+    characterSpeed = 0.5;
   }
 
   if (
@@ -81,6 +83,7 @@ function render() {
 }
 
 window.addEventListener("keydown", (e) => {
+  console.log(e);
   switch (e.key) {
     case "ArrowLeft":
     case "a":
@@ -94,7 +97,7 @@ window.addEventListener("keydown", (e) => {
 
     case "ArrowUp":
     case "w":
-    case "Space":
+    case " ":
       character.jump();
       break;
   }
@@ -122,10 +125,10 @@ window.addEventListener("keyup", (e) => {
 
 function gameLoop() {
   if (keys.left === true && keys.right === false) {
-    character.moveLeft(1);
+    character.moveLeft(characterSpeed);
   }
   if (keys.left === false && keys.right === true) {
-    character.moveRight(1);
+    character.moveRight(characterSpeed);
   }
   door.update();
   character.update();

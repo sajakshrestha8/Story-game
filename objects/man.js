@@ -1,8 +1,8 @@
 const playerImg = new Image();
-playerImg.src = "../assests/rendering-cartoon-fantasy-scene-illustration.jpg";
+playerImg.src = "../assests/sr5z60fd240461aws3.gif";
 const scale = 1.5;
 
-const GRAVITY = 0.8;
+const GRAVITY = 0.5;
 const JUMP_FORCE = 15;
 
 export default class Man {
