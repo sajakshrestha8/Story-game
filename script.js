@@ -14,13 +14,13 @@ const cWidth = 20;
 
 const character = new Man(cHeight, cWidth, 10, canvas.height - cHeight, 0);
 const obstacle = new Obstacle(50, 50, canvas.width - 50, canvas.height - 50);
-const switchs = new Switch(10, 30, 50, canvas.height - 10);
+const switchs = new Switch(10, 30, 300, canvas.height - 10);
 
 function isColliding(a, b) {
   return (
-    a.x < b.x + b.w &&
+    a.x < b.x + b.width &&
     a.x + a.width > b.x &&
-    a.y < b.y + b.h &&
+    a.y < b.y + b.height &&
     a.y + a.height > b.y
   );
 }
@@ -43,13 +43,11 @@ function render() {
   }
 
   if (isSwitchClicked) {
-    ctx.clearRect(switchs.x, switchs.y, switchs.w, switchs.h);
+    ctx.clearRect(switchs.x, switchs.y, switchs.width, switchs.height);
     ctx.fillStyle = "green";
-    ctx.fillRect(50, canvas.height - 5, 30, 5);
+    ctx.fillRect(300, canvas.height - 5, 30, 5);
+    obstacle.moveObstacle();
   }
-
-  drawHitbox(character);
-  drawHitbox(switchs);
 }
 
 window.addEventListener("keydown", (e) => {
@@ -66,7 +64,7 @@ window.addEventListener("keydown", (e) => {
 
     case "ArrowUp":
     case "w":
-    case "space":
+    case "Space":
       character.jump();
       break;
   }

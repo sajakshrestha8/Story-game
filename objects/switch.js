@@ -1,13 +1,13 @@
 export default class Switch {
-  constructor(h, w, x, y) {
-    this.h = h;
-    this.w = w;
+  constructor(height, width, x, y) {
+    this.height = height;
+    this.width = width;
     this.x = x;
     this.y = y;
   }
 
   draw(ctx) {
     ctx.fillStyle = "brown";
-    ctx.fillRect(this.x, this.y, this.w, this.h);
+    ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 }

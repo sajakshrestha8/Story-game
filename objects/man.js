@@ -1,3 +1,7 @@
+const playerImg = new Image();
+playerImg.src =
+  "../assests/png-transparent-cartoon-character-animation-game-cartoon-characters-video-game-boy-cartoon.png";
+
 const GRAVITY = 0.8;
 const JUMP_FORCE = 15;
 
@@ -37,7 +41,9 @@ export default class Man {
   }
 
   draw(ctx) {
-    ctx.fillStyle = "green";
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    // ctx.fillStyle = "green";
+    // ctx.fillRect(this.x, this.y, this.width, this.height);
+
+    ctx.drawImage(playerImg, this.x, this.y, this.width, this.height);
   }
 }

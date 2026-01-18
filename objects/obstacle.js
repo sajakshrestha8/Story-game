@@ -16,6 +16,10 @@ export default class Obstacle {
     }
   }
 
+  moveObstacle() {
+    this.x = this.x - 2;
+  }
+
   draw(ctx) {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.height / 2, 0, 2 * Math.PI);
