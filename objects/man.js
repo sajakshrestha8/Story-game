@@ -1,33 +1,27 @@
-const playerImg = new Image();
-playerImg.src = "../assests/sr5z60fd240461aws3.gif";
-const scale = 1.5;
-
-const GRAVITY = 0.5;
-const JUMP_FORCE = 15;
-
 export default class Man {
-  constructor(height, width, x, y, vy) {
+  constructor(x, y, height, width) {
     this.height = height;
     this.width = width;
     this.x = x;
     this.y = y;
-    this.vy = vy;
-    this.isOnGround = true;
+    this.vy = 0;
+    this.isOnGround = false;
   }
 
   moveLeft(speed) {
-    this.x = this.x - speed;
+    this.x -= speed;
   }
 
   moveRight(speed) {
-    this.x = this.x + speed;
+    this.x += speed;
   }
 
-  update() {
-    this.vy = this.vy + GRAVITY;
-    this.y = this.y + this.vy;
-    if (this.y >= 900) {
-      this.y = 900;
+  update(groundY) {
+    this.vy += 0.5;
+    this.y += this.vy;
+
+    if (this.y + this.height >= groundY) {
+      this.y = groundY - this.height;
       this.vy = 0;
       this.isOnGround = true;
     }
@@ -35,18 +29,13 @@ export default class Man {
 
   jump() {
     if (this.isOnGround) {
-      this.vy = this.vy - JUMP_FORCE;
+      this.vy = -12;
       this.isOnGround = false;
     }
   }
 
   draw(ctx) {
-    ctx.drawImage(
-      playerImg,
-      this.x,
-      this.y,
-      this.width * scale,
-      this.height * scale
-    );
+    ctx.fillStyle = "blue";
+    ctx.fillRect(this.x, this.y, this.height, this.width);
   }
 }

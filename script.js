@@ -16,20 +16,26 @@ let keys = {
 };
 
 canvas.width = 1000;
-canvas.height = 1000;
+canvas.height = 500;
 const cHeight = 50;
-const cWidth = 30;
+const cWidth = 50;
+const floorheight = 30;
 
-const character = new Man(cHeight, cWidth, 10, canvas.height - cHeight - 50, 0);
+const character = new Man(0, 0, cHeight, cWidth);
 const obstacle = new Obstacle(
   50,
   50,
   canvas.width - 50,
-  canvas.height - 50 - 50
+  canvas.height - 50 - 50,
 );
 const switchs = new Switch(10, 30, 500, canvas.height - 10 - 50);
-const door = new Door(50, 30, 200, canvas.height - 50 - 50);
-const floor = new Floor(30, canvas.width, 0, canvas.height - 50);
+const door = new Door(200, canvas.height - floorheight - 80, 80, 50);
+const floor = new Floor(
+  0,
+  canvas.height - floorheight,
+  floorheight,
+  canvas.width,
+);
 
 function isColliding(a, b) {
   return (
@@ -131,7 +137,7 @@ function gameLoop() {
     character.moveRight(characterSpeed);
   }
   door.update();
-  character.update();
+  character.update(canvas.height - floorheight);
   render();
   requestAnimationFrame(gameLoop);
 }
