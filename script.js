@@ -9,6 +9,9 @@ const ctx = canvas.getContext("2d");
 let isSwitchClicked = false;
 let isDoorOpen = false;
 let characterSpeed = 1;
+let showPopup = false;
+let levelCompleted = false;
+
 console.log(ctx);
 let keys = {
   left: false,
@@ -26,7 +29,7 @@ const obstacle = new Obstacle(
   50,
   50,
   canvas.width - 50,
-  canvas.height - 50 - 50,
+  canvas.height - 50 - 50
 );
 const switchs = new Switch(10, 30, 500, canvas.height - 10 - 50);
 const door = new Door(200, canvas.height - floorheight - 80, 80, 50);
@@ -34,7 +37,7 @@ const floor = new Floor(
   0,
   canvas.height - floorheight,
   floorheight,
-  canvas.width,
+  canvas.width
 );
 
 function isColliding(a, b) {
@@ -79,11 +82,44 @@ function render() {
     !isColliding(character, door) &&
     isColliding(character, obstacle)
   ) {
-    alert("game over");
+    levelCompleted = false;
+    showPopup = true;
   }
 
-  if (isSwitchClicked && isDoorOpen && isColliding(character, door)) {
-    confirm("Level has been completed. Wanna move to next level?");
+  if (
+    isSwitchClicked &&
+    isDoorOpen &&
+    isColliding(character, door) &&
+    !levelCompleted
+  ) {
+    levelCompleted = true;
+    showPopup = true;
+  }
+
+  if (showPopup && true) {
+    if (levelCompleted === true) {
+      ctx.fillStyle = "rgba(0,0,0,0.6)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "white";
+      ctx.fillRect(300, 180, 400, 140);
+
+      ctx.fillStyle = "black";
+      ctx.font = "20px Arial";
+      ctx.fillText("Level Completed", 420, 240);
+      ctx.fillText("Press ENTER for Next Level", 380, 280);
+    } else {
+      ctx.fillStyle = "rgba(0,0,0,0.6)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "white";
+      ctx.fillRect(300, 180, 400, 140);
+
+      ctx.fillStyle = "black";
+      ctx.font = "20px Arial";
+      ctx.fillText("Game Over", 420, 240);
+      ctx.fillText("Press ENTER for restart", 380, 280);
+    }
   }
   drawHitbox(door);
 }
@@ -105,6 +141,12 @@ window.addEventListener("keydown", (e) => {
     case "w":
     case " ":
       character.jump();
+      break;
+
+    case "Enter":
+      if (showPopup) {
+        window.location.reload();
+      }
       break;
   }
 });
@@ -130,11 +172,13 @@ window.addEventListener("keyup", (e) => {
 });
 
 function gameLoop() {
-  if (keys.left === true && keys.right === false) {
-    character.moveLeft(characterSpeed);
-  }
-  if (keys.left === false && keys.right === true) {
-    character.moveRight(characterSpeed);
+  if (!showPopup) {
+    if (keys.left === true && keys.right === false) {
+      character.moveLeft(characterSpeed);
+    }
+    if (keys.left === false && keys.right === true) {
+      character.moveRight(characterSpeed);
+    }
   }
   door.update();
   character.update(canvas.height - floorheight);
