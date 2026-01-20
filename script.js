@@ -55,6 +55,10 @@ function drawHitbox(obj) {
 }
 
 function render() {
+  if (showPopup) {
+    window.freeze();
+  }
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   floor.draw(ctx);
@@ -187,5 +191,3 @@ function gameLoop() {
 }
 
 gameLoop();
-
-// canvas.addEventListener("");
