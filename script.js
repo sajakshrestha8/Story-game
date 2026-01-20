@@ -29,15 +29,15 @@ const obstacle = new Obstacle(
   50,
   50,
   canvas.width - 50,
-  canvas.height - 50 - 50
+  canvas.height - 50 - 50,
 );
-const switchs = new Switch(10, 30, 500, canvas.height - 10 - 50);
-const door = new Door(200, canvas.height - floorheight - 80, 80, 50);
+const switchs = new Switch(500, canvas.height - floorheight - 20, 50, 20);
+const door = new Door(200, canvas.height - floorheight - 80, 50, 80);
 const floor = new Floor(
   0,
   canvas.height - floorheight,
+  canvas.width,
   floorheight,
-  canvas.width
 );
 
 function isColliding(a, b) {
@@ -58,9 +58,7 @@ function render() {
   if (showPopup) {
     window.freeze();
   }
-
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   floor.draw(ctx);
   door.draw(ctx);
   obstacle.draw(ctx);
@@ -70,13 +68,12 @@ function render() {
   if (!isSwitchClicked && isColliding(character, switchs)) {
     isSwitchClicked = true;
     isDoorOpen = true;
+    switchs.isOn = true;
   }
 
   if (isSwitchClicked) {
-    ctx.clearRect(switchs.x, switchs.y, switchs.width, switchs.height);
     door.openDoor();
     ctx.fillStyle = "green";
-    ctx.fillRect(500, canvas.height - 5 - 50, 30, 5);
     obstacle.moveObstacle();
     characterSpeed = 0.5;
   }
@@ -98,6 +95,7 @@ function render() {
   ) {
     levelCompleted = true;
     showPopup = true;
+    drawHitbox(door);
   }
 
   if (showPopup && true) {
@@ -112,6 +110,7 @@ function render() {
       ctx.font = "20px Arial";
       ctx.fillText("Level Completed", 420, 240);
       ctx.fillText("Press ENTER for Next Level", 380, 280);
+      obstacle(obstacle.x, obstacle.y, o);
     } else {
       ctx.fillStyle = "rgba(0,0,0,0.6)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);

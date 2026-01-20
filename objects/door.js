@@ -1,5 +1,5 @@
 export class Door {
-  constructor(x, y, height, width) {
+  constructor(x, y, width, height) {
     this.height = height;
     this.width = width;
     this.x = x;
