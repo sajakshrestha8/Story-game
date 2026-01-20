@@ -12,7 +12,7 @@ let currentLevelIndex = 0;
 let currentLevel = levels[currentLevelIndex];
 let isSwitchClicked = false;
 let isDoorOpen = false;
-let characterSpeed = 1;
+let characterSpeed = 5;
 let showPopup = false;
 let levelCompleted = false;
 
@@ -22,6 +22,7 @@ function loadLevel(index) {
   door.reset(level.door.x, canvas.height - floorheight - 80);
   switchs.reset(level.switch.x, canvas.height - 10 - 50);
   obstacle.reset(level.obstacle.x, canvas.height - 50 - 50);
+  character.reset(level.man.x, level.man.y);
 
   currentLevel = level;
 }
@@ -166,6 +167,7 @@ window.addEventListener("keydown", (e) => {
             switchs.isOn = false;
             isSwitchClicked = false;
             levelCompleted = false;
+            characterSpeed = 5;
             obstacle.reset(canvas.width - 50, canvas.height - 50 - 50);
           } else {
             window.location.reload();
