@@ -9,6 +9,9 @@ const ctx = canvas.getContext("2d");
 let isSwitchClicked = false;
 let isDoorOpen = false;
 let characterSpeed = 1;
+let showPopup = false;
+let levelCompleted = false;
+
 console.log(ctx);
 let keys = {
   left: false,
@@ -52,8 +55,11 @@ function drawHitbox(obj) {
 }
 
 function render() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (showPopup) {
+    window.freeze();
+  }
 
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   floor.draw(ctx);
   door.draw(ctx);
   obstacle.draw(ctx);
@@ -67,10 +73,8 @@ function render() {
   }
 
   if (isSwitchClicked) {
-    // ctx.clearRect(switchs.x, switchs.y, switchs.width, switchs.height);
     door.openDoor();
     ctx.fillStyle = "green";
-    // ctx.fillRect(500, canvas.height - 5 - 50, 30, 5);
     obstacle.moveObstacle();
     characterSpeed = 0.5;
   }
@@ -80,11 +84,46 @@ function render() {
     !isColliding(character, door) &&
     isColliding(character, obstacle)
   ) {
-    alert("game over");
+    levelCompleted = false;
+    showPopup = true;
   }
 
-  if (isSwitchClicked && isDoorOpen && isColliding(character, door)) {
-    confirm("Level has been completed. Wanna move to next level?");
+  if (
+    isSwitchClicked &&
+    isDoorOpen &&
+    isColliding(character, door) &&
+    !levelCompleted
+  ) {
+    levelCompleted = true;
+    showPopup = true;
+    drawHitbox(door);
+  }
+
+  if (showPopup && true) {
+    if (levelCompleted === true) {
+      ctx.fillStyle = "rgba(0,0,0,0.6)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "white";
+      ctx.fillRect(300, 180, 400, 140);
+
+      ctx.fillStyle = "black";
+      ctx.font = "20px Arial";
+      ctx.fillText("Level Completed", 420, 240);
+      ctx.fillText("Press ENTER for Next Level", 380, 280);
+      obstacle(obstacle.x, obstacle.y, o);
+    } else {
+      ctx.fillStyle = "rgba(0,0,0,0.6)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "white";
+      ctx.fillRect(300, 180, 400, 140);
+
+      ctx.fillStyle = "black";
+      ctx.font = "20px Arial";
+      ctx.fillText("Game Over", 420, 240);
+      ctx.fillText("Press ENTER for restart", 380, 280);
+    }
   }
   drawHitbox(door);
 }
@@ -106,6 +145,12 @@ window.addEventListener("keydown", (e) => {
     case "w":
     case " ":
       character.jump();
+      break;
+
+    case "Enter":
+      if (showPopup) {
+        window.location.reload();
+      }
       break;
   }
 });
@@ -131,11 +176,13 @@ window.addEventListener("keyup", (e) => {
 });
 
 function gameLoop() {
-  if (keys.left === true && keys.right === false) {
-    character.moveLeft(characterSpeed);
-  }
-  if (keys.left === false && keys.right === true) {
-    character.moveRight(characterSpeed);
+  if (!showPopup) {
+    if (keys.left === true && keys.right === false) {
+      character.moveLeft(characterSpeed);
+    }
+    if (keys.left === false && keys.right === true) {
+      character.moveRight(characterSpeed);
+    }
   }
   door.update();
   character.update(canvas.height - floorheight);
