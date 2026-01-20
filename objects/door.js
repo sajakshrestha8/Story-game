@@ -21,9 +21,10 @@ export class Door {
     }
   }
 
-  update() {
+  update(deltaTime) {
     if (this.state === "opening") {
-      this.currentHeight = this.currentHeight - 1;
+      const openSpeed = 60; // pixels per second
+      this.currentHeight = this.currentHeight - openSpeed * deltaTime;
       if (this.currentHeight <= 0) {
         this.currentHeight = 0;
         this.state = "opened";

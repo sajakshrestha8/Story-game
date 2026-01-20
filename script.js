@@ -8,11 +8,11 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 let isSwitchClicked = false;
 let isDoorOpen = false;
-let characterSpeed = 1;
+let characterSpeed = 120;
 let showPopup = false;
 let levelCompleted = false;
-
-console.log(ctx);
+let lastTime = 0;
+let deltaTime = 0;
 let keys = {
   left: false,
   right: false,
@@ -24,6 +24,8 @@ const cHeight = 50;
 const cWidth = 50;
 const floorheight = 30;
 
+// render objects
+
 const character = new Man(0, 0, cHeight, cWidth);
 const obstacle = new Obstacle(
   50,
@@ -31,8 +33,8 @@ const obstacle = new Obstacle(
   canvas.width - 50,
   canvas.height - 50 - 50,
 );
-const switchs = new Switch(500, canvas.height - floorheight - 20, 50, 20);
-const door = new Door(200, canvas.height - floorheight - 80, 50, 80);
+const switchs = new Switch(550, canvas.height - floorheight - 20, 50, 20);
+const door = new Door(80, canvas.height - floorheight - 80, 50, 80);
 const floor = new Floor(
   0,
   canvas.height - floorheight,
@@ -74,8 +76,8 @@ function render() {
   if (isSwitchClicked) {
     door.openDoor();
     ctx.fillStyle = "green";
-    obstacle.moveObstacle();
-    characterSpeed = 0.5;
+    obstacle.moveObstacle(deltaTime);
+    characterSpeed = 60;
   }
 
   if (
@@ -174,19 +176,23 @@ window.addEventListener("keyup", (e) => {
   }
 });
 
-function gameLoop() {
+function gameLoop(currentTime) {
+  deltaTime = Math.min((currentTime - lastTime) / 1000, 0.1);
+  lastTime = currentTime;
+
   if (!showPopup) {
     if (keys.left === true && keys.right === false) {
-      character.moveLeft(characterSpeed);
+      character.moveLeft(characterSpeed, deltaTime);
     }
     if (keys.left === false && keys.right === true) {
-      character.moveRight(characterSpeed);
+      character.moveRight(characterSpeed, deltaTime);
     }
   }
-  door.update();
-  character.update(canvas.height - floorheight);
+  door.update(deltaTime);
+  character.update(canvas.height - floorheight, deltaTime);
   render();
   requestAnimationFrame(gameLoop);
 }
 
-gameLoop();
+// Start the game loop with initial timestamp
+requestAnimationFrame(gameLoop);
