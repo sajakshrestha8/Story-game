@@ -28,13 +28,13 @@ const obstacle = new Obstacle(
   canvas.width - 50,
   canvas.height - 50 - 50,
 );
-const switchs = new Switch(10, 30, 500, canvas.height - 10 - 50);
-const door = new Door(200, canvas.height - floorheight - 80, 80, 50);
+const switchs = new Switch(500, canvas.height - floorheight - 20, 50, 20);
+const door = new Door(200, canvas.height - floorheight - 80, 50, 80);
 const floor = new Floor(
   0,
   canvas.height - floorheight,
-  floorheight,
   canvas.width,
+  floorheight,
 );
 
 function isColliding(a, b) {
@@ -63,13 +63,14 @@ function render() {
   if (!isSwitchClicked && isColliding(character, switchs)) {
     isSwitchClicked = true;
     isDoorOpen = true;
+    switchs.isOn = true;
   }
 
   if (isSwitchClicked) {
-    ctx.clearRect(switchs.x, switchs.y, switchs.width, switchs.height);
+    // ctx.clearRect(switchs.x, switchs.y, switchs.width, switchs.height);
     door.openDoor();
     ctx.fillStyle = "green";
-    ctx.fillRect(500, canvas.height - 5 - 50, 30, 5);
+    // ctx.fillRect(500, canvas.height - 5 - 50, 30, 5);
     obstacle.moveObstacle();
     characterSpeed = 0.5;
   }
