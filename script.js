@@ -1,3 +1,4 @@
+import { levels } from "./levels.js";
 import { Door } from "./objects/door.js";
 import { Floor } from "./objects/floor.js";
 import Man from "./objects/man.js";
@@ -6,13 +7,25 @@ import Switch from "./objects/switch.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+
+let currentLevelIndex = 0;
+let currentLevel = levels[currentLevelIndex];
 let isSwitchClicked = false;
 let isDoorOpen = false;
 let characterSpeed = 1;
 let showPopup = false;
 let levelCompleted = false;
 
-console.log(ctx);
+function loadLevel(index) {
+  const level = levels[index];
+
+  door.reset(level.door.x, canvas.height - floorheight - 80);
+  switchs.reset(level.switch.x, canvas.height - 10 - 50);
+  obstacle.reset(level.obstacle.x, canvas.height - 50 - 50);
+
+  currentLevel = level;
+}
+
 let keys = {
   left: false,
   right: false,
@@ -29,7 +42,7 @@ const obstacle = new Obstacle(
   50,
   50,
   canvas.width - 50,
-  canvas.height - 50 - 50,
+  canvas.height - 50 - 50
 );
 const switchs = new Switch(500, canvas.height - floorheight - 20, 50, 20);
 const door = new Door(200, canvas.height - floorheight - 80, 50, 80);
@@ -37,7 +50,7 @@ const floor = new Floor(
   0,
   canvas.height - floorheight,
   canvas.width,
-  floorheight,
+  floorheight
 );
 
 function isColliding(a, b) {
@@ -55,9 +68,6 @@ function drawHitbox(obj) {
 }
 
 function render() {
-  if (showPopup) {
-    window.freeze();
-  }
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   floor.draw(ctx);
   door.draw(ctx);
@@ -110,7 +120,7 @@ function render() {
       ctx.font = "20px Arial";
       ctx.fillText("Level Completed", 420, 240);
       ctx.fillText("Press ENTER for Next Level", 380, 280);
-      obstacle(obstacle.x, obstacle.y, o);
+      // obstacle(obstacle.x, obstacle.y);
     } else {
       ctx.fillStyle = "rgba(0,0,0,0.6)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -128,7 +138,6 @@ function render() {
 }
 
 window.addEventListener("keydown", (e) => {
-  console.log(e);
   switch (e.key) {
     case "ArrowLeft":
     case "a":
@@ -148,7 +157,22 @@ window.addEventListener("keydown", (e) => {
 
     case "Enter":
       if (showPopup) {
-        window.location.reload();
+        if (levelCompleted) {
+          currentLevelIndex++;
+
+          if (currentLevelIndex < levels.length) {
+            loadLevel(currentLevelIndex);
+            showPopup = false;
+            switchs.isOn = false;
+            isSwitchClicked = false;
+            levelCompleted = false;
+            obstacle.reset(canvas.width - 50, canvas.height - 50 - 50);
+          } else {
+            window.location.reload();
+          }
+        } else {
+          window.location.reload();
+        }
       }
       break;
   }

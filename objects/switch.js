@@ -36,4 +36,9 @@ export default class Switch {
       my <= this.y + this.height
     );
   }
+
+  reset(x, y) {
+    this.x = x;
+    this.y = y;
+  }
 }
