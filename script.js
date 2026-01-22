@@ -52,6 +52,16 @@ function isColliding(a, b) {
   );
 }
 
+function isCollidingCircleRect(circle, rect) {
+  const closestX = Math.max(rect.x, Math.min(circle.x, rect.x + rect.width));
+  const closestY = Math.max(rect.y, Math.min(circle.y, rect.y + rect.height));
+
+  const dx = circle.x - closestX;
+  const dy = circle.y - closestY;
+
+  return dx * dx + dy * dy <= circle.radius * circle.radius;
+}
+
 function drawHitbox(obj) {
   ctx.strokeStyle = "black";
   ctx.strokeRect(obj.x, obj.y, obj.width, obj.height);
@@ -84,7 +94,7 @@ function render() {
   if (
     isSwitchClicked &&
     !isColliding(character, door) &&
-    isColliding(character, obstacle)
+    isCollidingCircleRect(obstacle, character)
   ) {
     levelCompleted = false;
     showPopup = true;
@@ -113,7 +123,6 @@ function render() {
       ctx.font = "20px Arial";
       ctx.fillText("Level Completed", 420, 240);
       ctx.fillText("Press ENTER for Next Level", 380, 280);
-      obstacle(obstacle.x, obstacle.y, o);
     } else {
       ctx.fillStyle = "rgba(0,0,0,0.6)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
