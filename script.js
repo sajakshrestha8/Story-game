@@ -8,7 +8,7 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 let isSwitchClicked = false;
 let isDoorOpen = false;
-let characterSpeed = 120;
+let characterSpeed = 240;
 let showPopup = false;
 let levelCompleted = false;
 let lastTime = 0;
@@ -28,10 +28,11 @@ const floorheight = 30;
 
 const character = new Man(0, 0, cHeight, cWidth);
 const obstacle = new Obstacle(
-  50,
-  50,
-  canvas.width - 50,
-  canvas.height - 50 - 50,
+  canvas.width - 100,
+  canvas.height - 100,
+  20,
+  0,
+  2 * Math.PI,
 );
 const switchs = new Switch(550, canvas.height - floorheight - 20, 50, 20);
 const door = new Door(80, canvas.height - floorheight - 80, 50, 80);
@@ -77,7 +78,7 @@ function render() {
     door.openDoor();
     ctx.fillStyle = "green";
     obstacle.moveObstacle(deltaTime);
-    characterSpeed = 60;
+    characterSpeed = 120;
   }
 
   if (
@@ -127,6 +128,7 @@ function render() {
     }
   }
   drawHitbox(door);
+  drawHitbox(obstacle);
 }
 
 window.addEventListener("keydown", (e) => {

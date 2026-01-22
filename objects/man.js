@@ -7,7 +7,7 @@ export default class Man {
     this.vy = 0;
     this.isOnGround = false;
     this.gravity = 1800;
-    this.jumpVelocity = -720;
+    this.jumpVelocity = -800;
   }
 
   moveLeft(speed, deltaTime) {
