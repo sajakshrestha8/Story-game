@@ -1,3 +1,4 @@
+import { levels } from "./levels.js";
 import { Door } from "./objects/door.js";
 import { Floor } from "./objects/floor.js";
 import Man from "./objects/man.js";
@@ -6,6 +7,9 @@ import Switch from "./objects/switch.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+
+let currentLevelIndex = 0;
+let currentLevel = levels[currentLevelIndex];
 let isSwitchClicked = false;
 let isDoorOpen = false;
 let characterSpeed = 240;
@@ -13,6 +17,18 @@ let showPopup = false;
 let levelCompleted = false;
 let lastTime = 0;
 let deltaTime = 0;
+
+function loadLevel(index) {
+  const level = levels[index];
+
+  door.reset(level.door.x, canvas.height - floorheight - 80);
+  switchs.reset(level.switch.x, canvas.height - 10 - 50);
+  obstacle.reset(level.obstacle.x, canvas.height - 50 - 50);
+  character.reset(level.man.x, level.man.y);
+
+  currentLevel = level;
+}
+
 let keys = {
   left: false,
   right: false,
@@ -68,9 +84,6 @@ function drawHitbox(obj) {
 }
 
 function render() {
-  if (showPopup) {
-    window.freeze();
-  }
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   floor.draw(ctx);
   door.draw(ctx);
@@ -141,7 +154,6 @@ function render() {
 }
 
 window.addEventListener("keydown", (e) => {
-  console.log(e);
   switch (e.key) {
     case "ArrowLeft":
     case "a":
@@ -161,7 +173,23 @@ window.addEventListener("keydown", (e) => {
 
     case "Enter":
       if (showPopup) {
-        window.location.reload();
+        if (levelCompleted) {
+          currentLevelIndex++;
+
+          if (currentLevelIndex < levels.length) {
+            loadLevel(currentLevelIndex);
+            showPopup = false;
+            switchs.isOn = false;
+            isSwitchClicked = false;
+            levelCompleted = false;
+            characterSpeed = 5;
+            obstacle.reset(canvas.width - 50, canvas.height - 50 - 50);
+          } else {
+            window.location.reload();
+          }
+        } else {
+          window.location.reload();
+        }
       }
       break;
   }

@@ -22,6 +22,11 @@ export default class Obstacle {
     this.x = this.x - speed * deltaTime;
   }
 
+  reset(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
   draw(ctx) {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, this.startAngle, this.endAngle);

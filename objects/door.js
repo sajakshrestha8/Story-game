@@ -32,6 +32,11 @@ export class Door {
     }
   }
 
+  reset(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
   draw(ctx) {
     if (this.currentHeight <= 0) return;
 
