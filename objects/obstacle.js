@@ -1,9 +1,10 @@
 export default class Obstacle {
-  constructor(height, width, x, y, enabled) {
-    this.height = height;
-    this.width = width;
+  constructor(x, y, radius, startAngle, endAngle, enabled) {
     this.x = x;
     this.y = y;
+    this.startAngle = startAngle;
+    this.endAngle = endAngle;
+    this.radius = radius;
     this.enabled = enabled;
   }
 
@@ -16,8 +17,9 @@ export default class Obstacle {
     }
   }
 
-  moveObstacle() {
-    this.x = this.x - 1;
+  moveObstacle(deltaTime) {
+    const speed = 100;
+    this.x = this.x - speed * deltaTime;
   }
 
   reset(x, y) {
@@ -27,7 +29,7 @@ export default class Obstacle {
 
   draw(ctx) {
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.height / 2, 0, 2 * Math.PI);
+    ctx.arc(this.x, this.y, this.radius, this.startAngle, this.endAngle);
     ctx.fillStyle = "red";
     ctx.fill();
   }

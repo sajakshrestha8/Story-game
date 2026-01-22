@@ -12,9 +12,11 @@ let currentLevelIndex = 0;
 let currentLevel = levels[currentLevelIndex];
 let isSwitchClicked = false;
 let isDoorOpen = false;
-let characterSpeed = 5;
+let characterSpeed = 240;
 let showPopup = false;
 let levelCompleted = false;
+let lastTime = 0;
+let deltaTime = 0;
 
 function loadLevel(index) {
   const level = levels[index];
@@ -38,20 +40,23 @@ const cHeight = 50;
 const cWidth = 50;
 const floorheight = 30;
 
+// render objects
+
 const character = new Man(0, 0, cHeight, cWidth);
 const obstacle = new Obstacle(
-  50,
-  50,
-  canvas.width - 50,
-  canvas.height - 50 - 50
+  canvas.width - 100,
+  canvas.height - 100,
+  20,
+  0,
+  2 * Math.PI,
 );
-const switchs = new Switch(500, canvas.height - floorheight - 20, 50, 20);
-const door = new Door(200, canvas.height - floorheight - 80, 50, 80);
+const switchs = new Switch(550, canvas.height - floorheight - 20, 50, 20);
+const door = new Door(80, canvas.height - floorheight - 80, 50, 80);
 const floor = new Floor(
   0,
   canvas.height - floorheight,
   canvas.width,
-  floorheight
+  floorheight,
 );
 
 function isColliding(a, b) {
@@ -61,6 +66,16 @@ function isColliding(a, b) {
     a.y < b.y + b.height &&
     a.y + a.height > b.y
   );
+}
+
+function isCollidingCircleRect(circle, rect) {
+  const closestX = Math.max(rect.x, Math.min(circle.x, rect.x + rect.width));
+  const closestY = Math.max(rect.y, Math.min(circle.y, rect.y + rect.height));
+
+  const dx = circle.x - closestX;
+  const dy = circle.y - closestY;
+
+  return dx * dx + dy * dy <= circle.radius * circle.radius;
 }
 
 function drawHitbox(obj) {
@@ -85,14 +100,14 @@ function render() {
   if (isSwitchClicked) {
     door.openDoor();
     ctx.fillStyle = "green";
-    obstacle.moveObstacle();
-    characterSpeed = 0.5;
+    obstacle.moveObstacle(deltaTime);
+    characterSpeed = 120;
   }
 
   if (
     isSwitchClicked &&
     !isColliding(character, door) &&
-    isColliding(character, obstacle)
+    isCollidingCircleRect(obstacle, character)
   ) {
     levelCompleted = false;
     showPopup = true;
@@ -121,7 +136,6 @@ function render() {
       ctx.font = "20px Arial";
       ctx.fillText("Level Completed", 420, 240);
       ctx.fillText("Press ENTER for Next Level", 380, 280);
-      // obstacle(obstacle.x, obstacle.y);
     } else {
       ctx.fillStyle = "rgba(0,0,0,0.6)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -136,6 +150,7 @@ function render() {
     }
   }
   drawHitbox(door);
+  drawHitbox(obstacle);
 }
 
 window.addEventListener("keydown", (e) => {
@@ -200,19 +215,23 @@ window.addEventListener("keyup", (e) => {
   }
 });
 
-function gameLoop() {
+function gameLoop(currentTime) {
+  deltaTime = Math.min((currentTime - lastTime) / 1000, 0.1);
+  lastTime = currentTime;
+
   if (!showPopup) {
     if (keys.left === true && keys.right === false) {
-      character.moveLeft(characterSpeed);
+      character.moveLeft(characterSpeed, deltaTime);
     }
     if (keys.left === false && keys.right === true) {
-      character.moveRight(characterSpeed);
+      character.moveRight(characterSpeed, deltaTime);
     }
   }
-  door.update();
-  character.update(canvas.height - floorheight);
+  door.update(deltaTime);
+  character.update(canvas.height - floorheight, deltaTime);
   render();
   requestAnimationFrame(gameLoop);
 }
 
-gameLoop();
+// Start the game loop with initial timestamp
+requestAnimationFrame(gameLoop);

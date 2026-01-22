@@ -6,19 +6,21 @@ export default class Man {
     this.y = y;
     this.vy = 0;
     this.isOnGround = false;
+    this.gravity = 1800;
+    this.jumpVelocity = -800;
   }
 
-  moveLeft(speed) {
-    this.x -= speed;
+  moveLeft(speed, deltaTime) {
+    this.x -= speed * deltaTime;
   }
 
-  moveRight(speed) {
-    this.x += speed;
+  moveRight(speed, deltaTime) {
+    this.x += speed * deltaTime;
   }
 
-  update(groundY) {
-    this.vy += 0.5;
-    this.y += this.vy;
+  update(groundY, deltaTime) {
+    this.vy += this.gravity * deltaTime;
+    this.y += this.vy * deltaTime;
 
     if (this.y + this.height >= groundY) {
       this.y = groundY - this.height;
@@ -29,7 +31,7 @@ export default class Man {
 
   jump() {
     if (this.isOnGround) {
-      this.vy = -12;
+      this.vy = this.jumpVelocity;
       this.isOnGround = false;
     }
   }
