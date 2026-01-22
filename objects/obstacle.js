@@ -20,6 +20,11 @@ export default class Obstacle {
     this.x = this.x - 1;
   }
 
+  reset(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
   draw(ctx) {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.height / 2, 0, 2 * Math.PI);
