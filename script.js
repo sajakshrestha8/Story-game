@@ -17,6 +17,10 @@ let showPopup = false;
 let levelCompleted = false;
 let lastTime = 0;
 let deltaTime = 0;
+let obstacleDirection = "left";
+let speed = 100;
+let shakeIntensity = 0;
+let shakeDecay = 0.9;
 
 function loadLevel(index) {
   const level = levels[index];
@@ -25,6 +29,7 @@ function loadLevel(index) {
   switchs.reset(level.switch.x, canvas.height - 10 - 50);
   obstacle.reset(level.obstacle.x, canvas.height - 50 - 50);
   character.reset(level.man.x, level.man.y);
+  speed = level.speed;
 
   currentLevel = level;
 }
@@ -40,6 +45,11 @@ const cHeight = 50;
 const cWidth = 50;
 const floorheight = 30;
 
+function isCircleCollidingWithCanvas(circle) {
+  return (
+    circle.x + circle.radius >= canvas.width || circle.x - circle.radius <= 0
+  );
+}
 // render objects
 
 const character = new Man(0, 0, cHeight, cWidth);
@@ -48,7 +58,7 @@ const obstacle = new Obstacle(
   canvas.height - 100,
   20,
   0,
-  2 * Math.PI,
+  2 * Math.PI
 );
 const switchs = new Switch(550, canvas.height - floorheight - 20, 50, 20);
 const door = new Door(80, canvas.height - floorheight - 80, 50, 80);
@@ -56,7 +66,7 @@ const floor = new Floor(
   0,
   canvas.height - floorheight,
   canvas.width,
-  floorheight,
+  floorheight
 );
 
 function isColliding(a, b) {
@@ -84,6 +94,14 @@ function drawHitbox(obj) {
 }
 
 function render() {
+  if (shakeIntensity > 0) {
+    ctx.translate(
+      (Math.random() - 0.5) * shakeIntensity,
+      (Math.random() - 0.5) * shakeIntensity
+    );
+    shakeIntensity *= shakeDecay;
+  }
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   floor.draw(ctx);
   door.draw(ctx);
@@ -100,7 +118,12 @@ function render() {
   if (isSwitchClicked && !showPopup) {
     door.openDoor();
     ctx.fillStyle = "green";
-    obstacle.moveObstacle(deltaTime);
+    if (isCircleCollidingWithCanvas(obstacle)) {
+      obstacleDirection = obstacleDirection === "left" ? "right" : "left";
+      speed = speed + 50;
+      shakeIntensity = 10;
+    }
+    obstacle.moveObstacle(deltaTime, obstacleDirection, speed);
     characterSpeed = 120;
   }
 
