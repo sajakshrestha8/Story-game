@@ -9,6 +9,12 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 let currentLevelIndex = parseInt(localStorage.getItem("currentLevel")) || 0;
+canvas.width = 1000;
+canvas.height = 500;
+const cHeight = 50;
+const cWidth = 50;
+const floorheight = 30;
+
 let currentLevel = levels[currentLevelIndex];
 let isSwitchClicked = false;
 let isDoorOpen = false;
@@ -17,14 +23,28 @@ let showPopup = false;
 let levelCompleted = false;
 let lastTime = 0;
 let deltaTime = 0;
+let floors = [];
+let floorHeightY = canvas.height - floorheight;
+let level = 0;
+
+function drawLevel() {
+  ctx.fillStyle = "black";
+  ctx.font = "20px Arial";
+  ctx.fillText("Level: " + (currentLevelIndex + 1), 20, 30);
+}
 
 function loadLevel(index) {
   const level = levels[index];
 
-  door.reset(level.door.x, canvas.height - floorheight - 80);
-  switchs.reset(level.switch.x, canvas.height - 10 - 50);
-  obstacle.reset(level.obstacle.x, canvas.height - 50 - 50);
-  character.reset(level.man.x, level.man.y);
+  floors = level.floors.map((f) => new Floor(f.x, f.y, f.width, f.height));
+
+  const groundFloor = floors[0];
+  floorHeightY = groundFloor.y;
+
+  door.reset(level.door.x, floorHeightY - door.height);
+  switchs.reset(level.switch.x, floorHeightY - switchs.height);
+  obstacle.reset(level.obstacle.x, floorHeightY - obstacle.radius);
+  character.reset(level.man.x, floorHeightY - character.height - 30);
 
   currentLevel = level;
 }
@@ -33,12 +53,6 @@ let keys = {
   left: false,
   right: false,
 };
-
-canvas.width = 1000;
-canvas.height = 500;
-const cHeight = 50;
-const cWidth = 50;
-const floorheight = 30;
 
 // render objects
 
@@ -68,6 +82,30 @@ function isColliding(a, b) {
   );
 }
 
+function getFloorBeneathCharacter() {
+  let closestFloor = null;
+  let closestDistance = Infinity;
+
+  for (const floor of floors) {
+    const isAboveFloor =
+      character.x + character.width > floor.x &&
+      character.x < floor.x + floor.width;
+
+    const floorTop = floor.y;
+    const characterBottom = character.y + character.height;
+
+    if (isAboveFloor && floorTop >= characterBottom - 10) {
+      const distance = floorTop - characterBottom;
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestFloor = floor;
+      }
+    }
+  }
+
+  return closestFloor;
+}
+
 function isCollidingCircleRect(circle, rect) {
   const closestX = Math.max(rect.x, Math.min(circle.x, rect.x + rect.width));
   const closestY = Math.max(rect.y, Math.min(circle.y, rect.y + rect.height));
@@ -90,6 +128,7 @@ function render() {
   obstacle.draw(ctx);
   switchs.draw(ctx);
   character.draw(ctx);
+  floors.forEach((floor) => floor.draw(ctx));
 
   if (!isSwitchClicked && isColliding(character, switchs)) {
     isSwitchClicked = true;
@@ -151,6 +190,7 @@ function render() {
   }
   drawHitbox(door);
   drawHitbox(obstacle);
+  drawLevel();
 }
 
 window.addEventListener("keydown", (e) => {
@@ -232,7 +272,13 @@ function gameLoop(currentTime) {
   }
   if (!showPopup) {
     door.update(deltaTime);
-    character.update(canvas.height - floorheight, deltaTime);
+
+    const floorBeneath = getFloorBeneathCharacter();
+    const landingY = floorBeneath
+      ? floorBeneath.y
+      : canvas.height - floorheight;
+
+    character.update(landingY, deltaTime);
   }
   render();
   requestAnimationFrame(gameLoop);
