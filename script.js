@@ -25,6 +25,13 @@ let lastTime = 0;
 let deltaTime = 0;
 let floors = [];
 let floorHeightY = canvas.height - floorheight;
+let level = 0;
+
+function drawLevel() {
+  ctx.fillStyle = "black";
+  ctx.font = "20px Arial";
+  ctx.fillText("Level: " + (currentLevelIndex + 1), 20, 30);
+}
 
 function loadLevel(index) {
   const level = levels[index];
@@ -183,6 +190,7 @@ function render() {
   }
   drawHitbox(door);
   drawHitbox(obstacle);
+  drawLevel();
 }
 
 window.addEventListener("keydown", (e) => {
@@ -263,7 +271,6 @@ function gameLoop(currentTime) {
     door.update(deltaTime);
 
     const floorBeneath = getFloorBeneathCharacter();
-    console.log(floorBeneath);
     const landingY = floorBeneath
       ? floorBeneath.y
       : canvas.height - floorheight;
