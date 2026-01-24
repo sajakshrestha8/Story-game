@@ -82,6 +82,15 @@ function isColliding(a, b) {
   );
 }
 
+function isCharacterColliedWithCanvas({ object, canvas }) {
+  if (object.x <= 0) {
+    object.x = 0;
+  }
+  if (object.x + object.width >= canvas.width) {
+    object.x = canvas.width - object.width;
+  }
+}
+
 function getFloorBeneathCharacter() {
   let closestFloor = null;
   let closestDistance = Infinity;
@@ -258,9 +267,12 @@ window.addEventListener("keyup", (e) => {
 });
 
 function gameLoop(currentTime) {
-  console.log(parseInt(localStorage.getItem("currentLevel")));
   deltaTime = Math.min((currentTime - lastTime) / 1000, 0.1);
   lastTime = currentTime;
+  isCharacterColliedWithCanvas({
+    object: character,
+    canvas,
+  });
 
   if (!showPopup) {
     if (keys.left === true && keys.right === false) {
