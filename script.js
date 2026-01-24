@@ -8,13 +8,13 @@ import Switch from "./objects/switch.js";
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+let currentLevelIndex = parseInt(localStorage.getItem("currentLevel")) || 0;
 canvas.width = 1000;
 canvas.height = 500;
 const cHeight = 50;
 const cWidth = 50;
 const floorheight = 30;
 
-let currentLevelIndex = 0;
 let currentLevel = levels[currentLevelIndex];
 let isSwitchClicked = false;
 let isDoorOpen = false;
@@ -62,7 +62,7 @@ const obstacle = new Obstacle(
   canvas.height - 100,
   20,
   0,
-  2 * Math.PI
+  2 * Math.PI,
 );
 const switchs = new Switch(550, canvas.height - floorheight - 20, 50, 20);
 const door = new Door(80, canvas.height - floorheight - 80, 50, 80);
@@ -70,7 +70,7 @@ const floor = new Floor(
   0,
   canvas.height - floorheight,
   canvas.width,
-  floorheight
+  floorheight,
 );
 
 function isColliding(a, b) {
@@ -217,6 +217,7 @@ window.addEventListener("keydown", (e) => {
           currentLevelIndex++;
 
           if (currentLevelIndex < levels.length) {
+            localStorage.setItem("currentLevel", currentLevelIndex);
             loadLevel(currentLevelIndex);
             showPopup = false;
             switchs.isOn = false;
@@ -225,6 +226,7 @@ window.addEventListener("keydown", (e) => {
             characterSpeed = 240;
             obstacle.reset(canvas.width - 50, canvas.height - 50 - 50);
           } else {
+            localStorage.removeItem("currentLevel");
             window.location.reload();
           }
         } else {
@@ -256,6 +258,7 @@ window.addEventListener("keyup", (e) => {
 });
 
 function gameLoop(currentTime) {
+  console.log(parseInt(localStorage.getItem("currentLevel")));
   deltaTime = Math.min((currentTime - lastTime) / 1000, 0.1);
   lastTime = currentTime;
 
