@@ -17,9 +17,12 @@ export default class Obstacle {
     }
   }
 
-  moveObstacle(deltaTime) {
-    const speed = 200;
-    this.x = this.x - speed * deltaTime;
+  moveObstacle(deltaTime, direction, speed) {
+    if (direction === "left") {
+      this.x = this.x - speed * deltaTime;
+    } else {
+      this.x = this.x + speed * deltaTime;
+    }
   }
 
   reset(x, y) {
