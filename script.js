@@ -97,7 +97,7 @@ function render() {
     switchs.isOn = true;
   }
 
-  if (isSwitchClicked) {
+  if (isSwitchClicked && !showPopup) {
     door.openDoor();
     ctx.fillStyle = "green";
     obstacle.moveObstacle(deltaTime);
@@ -182,7 +182,7 @@ window.addEventListener("keydown", (e) => {
             switchs.isOn = false;
             isSwitchClicked = false;
             levelCompleted = false;
-            characterSpeed = 5;
+            characterSpeed = 240;
             obstacle.reset(canvas.width - 50, canvas.height - 50 - 50);
           } else {
             window.location.reload();
@@ -227,11 +227,12 @@ function gameLoop(currentTime) {
       character.moveRight(characterSpeed, deltaTime);
     }
   }
-  door.update(deltaTime);
-  character.update(canvas.height - floorheight, deltaTime);
+  if (!showPopup) {
+    door.update(deltaTime);
+    character.update(canvas.height - floorheight, deltaTime);
+  }
   render();
   requestAnimationFrame(gameLoop);
 }
 
-// Start the game loop with initial timestamp
 requestAnimationFrame(gameLoop);

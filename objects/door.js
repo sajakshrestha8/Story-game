@@ -35,6 +35,8 @@ export class Door {
   reset(x, y) {
     this.x = x;
     this.y = y;
+    this.state = "closed";
+    this.currentHeight = this.height;
   }
 
   draw(ctx) {

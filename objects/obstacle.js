@@ -18,7 +18,7 @@ export default class Obstacle {
   }
 
   moveObstacle(deltaTime) {
-    const speed = 100;
+    const speed = 200;
     this.x = this.x - speed * deltaTime;
   }
 
