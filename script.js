@@ -8,7 +8,7 @@ import Switch from "./objects/switch.js";
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-let currentLevelIndex = 0;
+let currentLevelIndex = parseInt(localStorage.getItem("currentLevel")) || 0;
 let currentLevel = levels[currentLevelIndex];
 let isSwitchClicked = false;
 let isDoorOpen = false;
@@ -177,6 +177,7 @@ window.addEventListener("keydown", (e) => {
           currentLevelIndex++;
 
           if (currentLevelIndex < levels.length) {
+            localStorage.setItem("currentLevel", currentLevelIndex);
             loadLevel(currentLevelIndex);
             showPopup = false;
             switchs.isOn = false;
@@ -185,6 +186,7 @@ window.addEventListener("keydown", (e) => {
             characterSpeed = 240;
             obstacle.reset(canvas.width - 50, canvas.height - 50 - 50);
           } else {
+            localStorage.removeItem("currentLevel");
             window.location.reload();
           }
         } else {
@@ -216,6 +218,7 @@ window.addEventListener("keyup", (e) => {
 });
 
 function gameLoop(currentTime) {
+  console.log(parseInt(localStorage.getItem("currentLevel")));
   deltaTime = Math.min((currentTime - lastTime) / 1000, 0.1);
   lastTime = currentTime;
 
