@@ -52,8 +52,8 @@ No external libraries or game engines are used.
 
 | Key | Action |
 |----|--------|
-| ⬅️ | a / ➡️ | d | Move Left / Right |
-| ⬆️ | ' ' | w | Jump |
+| ⬅️ , a / ➡️ , d | Move Left / Right |
+| ⬆️ , ' ' , w | Jump |
 
 ---
 
