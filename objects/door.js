@@ -1,4 +1,4 @@
-export class Door {
+export default class Door {
   constructor(x, y, width, height) {
     this.height = height;
     this.width = width;
