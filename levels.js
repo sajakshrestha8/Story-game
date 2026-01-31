@@ -1,6 +1,7 @@
 export const levels = [
   {
     id: 1,
+<<<<<<< Updated upstream
     man: { x: 20 },
     door: { x: 500 },
     switch: { x: 250 },
@@ -20,6 +21,14 @@ export const levels = [
       { x: 0, y: 450, width: 350, height: 50 },
       { x: 400, y: 450, width: 300, height: 50 },
     ],
+=======
+    man: { x: 0 },
+    door: { x: 200 },
+    switch: { x: 500 },
+    obstacle: { x: 50 },
+    speed: 400,
+    floors: [{ x: 0, y: 450, width: 800, height: 50 }],
+>>>>>>> Stashed changes
   },
   {
     id: 3,
@@ -57,7 +66,11 @@ export const levels = [
     floors: [
       { x: 0, y: 450, width: 300, height: 50 },
       { x: 350, y: 400, width: 200, height: 50 },
+<<<<<<< Updated upstream
       { x: 600, y: 450, width: 220, height: 50 },
+=======
+      { x: 600, y: 450, width: 200, height: 50 },
+>>>>>>> Stashed changes
     ],
   },
   {
@@ -108,6 +121,7 @@ export const levels = [
     speed: 420,
     floors: [
       { x: 0, y: 450, width: 200, height: 50 },
+<<<<<<< Updated upstream
       { x: 260, y: 410, width: 110, height: 50 },
       { x: 430, y: 360, width: 110, height: 50 },
       { x: 600, y: 310, width: 110, height: 50 },
@@ -125,6 +139,10 @@ export const levels = [
       { x: 300, y: 410, width: 140, height: 50, speed: 140 },
       { x: 500, y: 360, width: 140, height: 50, speed: 160 },
       { x: 700, y: 310, width: 100, height: 50 },
+=======
+      { x: 250, y: 380, width: 150, height: 50 },
+      { x: 450, y: 320, width: 200, height: 50 },
+>>>>>>> Stashed changes
     ],
   },
 ];
