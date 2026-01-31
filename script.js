@@ -43,7 +43,7 @@ function loadLevel(index) {
   const level = levels[index];
 
   floors = level.floors.map(
-    (f) => new Floor(f.x, f.y, f.width, f.height, f.speed || 0)
+    (f) => new Floor(f.x, f.y, f.width, f.height, f.speed || 0),
   );
 
   const groundFloor = floors[0];
@@ -76,7 +76,7 @@ const obstacle = new Obstacle(
   canvas.height - 100,
   20,
   0,
-  2 * Math.PI
+  2 * Math.PI,
 );
 const switchs = new Switch(550, canvas.height - 20, 50, 20);
 const door = new Door(80, canvas.height - 80, 50, 80);
@@ -146,7 +146,7 @@ function render() {
   if (shakeIntensity > 0) {
     ctx.translate(
       (Math.random() - 0.5) * shakeIntensity,
-      (Math.random() - 0.5) * shakeIntensity
+      (Math.random() - 0.5) * shakeIntensity,
     );
     shakeIntensity *= shakeDecay;
   }
@@ -160,7 +160,11 @@ function render() {
 
   ctx.restore();
 
-  if (!isSwitchClicked && isColliding(character, switchs)) {
+  if (
+    !isSwitchClicked &&
+    switchs.isVisible &&
+    isColliding(character, switchs)
+  ) {
     isSwitchClicked = true;
     isDoorOpen = true;
     switchs.isOn = true;
@@ -303,10 +307,12 @@ function gameLoop(currentTime) {
     if (keys.left === true && keys.right === false) {
       character.moveLeft(characterSpeed, deltaTime);
       floorMovingDirection = "left";
+      switchs.isVisible = true;
     }
     if (keys.left === false && keys.right === true) {
       character.moveRight(characterSpeed, deltaTime);
       floorMovingDirection = "right";
+      switchs.isVisible = true;
     }
   }
   if (!showPopup) {
