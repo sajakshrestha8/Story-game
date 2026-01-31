@@ -139,6 +139,8 @@ function drawHitbox(obj) {
 }
 
 function render() {
+  ctx.save();
+
   if (shakeIntensity > 0) {
     ctx.translate(
       (Math.random() - 0.5) * shakeIntensity,
@@ -153,6 +155,8 @@ function render() {
   switchs.draw(ctx);
   character.draw(ctx);
   floors.forEach((floor) => floor.draw(ctx));
+
+  ctx.restore();
 
   if (!isSwitchClicked && isColliding(character, switchs)) {
     isSwitchClicked = true;
