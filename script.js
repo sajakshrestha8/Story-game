@@ -4,6 +4,7 @@ import { Floor } from "./objects/floor.js";
 import Man from "./objects/man.js";
 import Obstacle from "./objects/obstacle.js";
 import Switch from "./objects/switch.js";
+import { floorCollision } from "./utils/collisions.js";
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -12,7 +13,6 @@ canvas.width = 1000;
 canvas.height = 500;
 const cHeight = 50;
 const cWidth = 50;
-const floorheight = 30;
 
 let currentLevelIndex = 0;
 let currentLevel = levels[currentLevelIndex];
@@ -28,18 +28,21 @@ let speed = 150;
 let shakeIntensity = 0;
 let shakeDecay = 0.9;
 let floors = [];
-let floorHeightY = canvas.height - floorheight;
+let floorHeightY = canvas.height;
+let floorMovingDirection = null;
 
 function drawLevel() {
   ctx.fillStyle = "black";
   ctx.font = "20px Arial";
-  ctx.fillText("Score: " + parseInt(currentLevelIndex) + 1, 20, 30);
+  ctx.fillText("Level: " + (currentLevelIndex + 1), 20, 30);
 }
 
 function loadLevel(index) {
   const level = levels[index];
 
-  floors = level.floors.map((f) => new Floor(f.x, f.y, f.width, f.height));
+  floors = level.floors.map(
+    (f) => new Floor(f.x, f.y, f.width, f.height, f.speed || 0)
+  );
 
   const groundFloor = floors[0];
   floorHeightY = groundFloor.y;
@@ -73,16 +76,12 @@ const obstacle = new Obstacle(
   0,
   2 * Math.PI
 );
-const switchs = new Switch(550, canvas.height - floorheight - 20, 50, 20);
-const door = new Door(80, canvas.height - floorheight - 80, 50, 80);
-const floor = new Floor(
-  0,
-  canvas.height - floorheight,
-  canvas.width,
-  floorheight
-);
+const switchs = new Switch(550, canvas.height - 20, 50, 20);
+const door = new Door(80, canvas.height - 80, 50, 80);
 
-function isColliding(a, b) {
+loadLevel(currentLevelIndex);
+
+export function isColliding(a, b) {
   return (
     a.x < b.x + b.width &&
     a.x + a.width > b.x &&
@@ -149,7 +148,6 @@ function render() {
   }
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  floor.draw(ctx);
   door.draw(ctx);
   obstacle.draw(ctx);
   switchs.draw(ctx);
@@ -222,6 +220,7 @@ function render() {
   drawHitbox(door);
   drawHitbox(obstacle);
   drawLevel();
+  floorCollision(character, floors, floorMovingDirection);
 }
 
 window.addEventListener("keydown", (e) => {
@@ -297,19 +296,20 @@ function gameLoop(currentTime) {
   if (!showPopup) {
     if (keys.left === true && keys.right === false) {
       character.moveLeft(characterSpeed, deltaTime);
+      floorMovingDirection = "left";
     }
     if (keys.left === false && keys.right === true) {
       character.moveRight(characterSpeed, deltaTime);
+      floorMovingDirection = "right";
     }
   }
   if (!showPopup) {
     door.update(deltaTime);
 
     const floorBeneath = getFloorBeneathCharacter();
-    const landingY = floorBeneath
-      ? floorBeneath.y
-      : canvas.height - floorheight;
+    const landingY = floorBeneath ? floorBeneath.y : canvas.height;
 
+    floors.forEach((floor) => floor.update(deltaTime));
     character.update(landingY, deltaTime);
   }
   render();

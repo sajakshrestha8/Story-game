@@ -6,7 +6,10 @@ export const levels = [
     switch: { x: 500 },
     obstacle: { x: 50 },
     speed: 400,
-    floors: [{ x: 0, y: 450, width: 800, height: 50 }],
+    floors: [
+      { x: 0, y: 450, width: 800, height: 50 },
+      { x: 350, y: 400, width: 200, height: 50, speed: 100 },
+    ],
   },
   {
     id: 2,
@@ -17,7 +20,7 @@ export const levels = [
     speed: 250,
     floors: [
       { x: 0, y: 450, width: 300, height: 50 },
-      { x: 350, y: 400, width: 200, height: 50 },
+      { x: 350, y: 400, width: 200, height: 50, speed: 100 },
       { x: 600, y: 450, width: 200, height: 50 },
     ],
   },
@@ -31,7 +34,7 @@ export const levels = [
     floors: [
       { x: 0, y: 450, width: 200, height: 50 },
       { x: 250, y: 380, width: 150, height: 50 },
-      { x: 450, y: 320, width: 200, height: 50 },
+      { x: 450, y: 320, width: 200, height: 50, speed: 100 },
     ],
   },
 ];
