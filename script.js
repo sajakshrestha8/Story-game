@@ -14,6 +14,8 @@ canvas.height = 500;
 const cHeight = 50;
 const cWidth = 50;
 
+const FALL_DEATH = canvas.height - 50;
+
 let currentLevelIndex = 0;
 let currentLevel = levels[currentLevelIndex];
 let isSwitchClicked = false;
@@ -312,6 +314,11 @@ function gameLoop(currentTime) {
 
     const floorBeneath = getFloorBeneathCharacter();
     const landingY = floorBeneath ? floorBeneath.y : canvas.height;
+
+    if (!floorBeneath && character.y >= FALL_DEATH) {
+      showPopup = true;
+      levelCompleted = false;
+    }
 
     floors.forEach((floor) => floor.update(deltaTime));
     character.update(landingY, deltaTime);
