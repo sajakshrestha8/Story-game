@@ -5,6 +5,7 @@ export default class Switch {
     this.width = width;
     this.height = height;
     this.isOn = false;
+    this.isVisible = false;
   }
 
   toggle() {
@@ -13,6 +14,11 @@ export default class Switch {
 
   draw(ctx) {
     ctx.save();
+
+    // Curently the switch is invisible
+    if (!this.isVisible) {
+      return;
+    }
 
     // Switch background
     ctx.fillStyle = this.isOn ? "#4caf50" : "#aaa";

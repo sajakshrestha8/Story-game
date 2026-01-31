@@ -6,6 +6,7 @@ export default class Obstacle {
     this.endAngle = endAngle;
     this.radius = radius;
     this.enabled = enabled;
+    this.isVisible = false;
   }
 
   createObstacle(enabled) {
@@ -18,6 +19,7 @@ export default class Obstacle {
   }
 
   moveObstacle(deltaTime, direction, speed) {
+    this.isVisible = true;
     if (direction === "left") {
       this.x = this.x - speed * deltaTime;
     } else {
@@ -31,6 +33,7 @@ export default class Obstacle {
   }
 
   draw(ctx) {
+    if (!this.isVisible) return;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, this.startAngle, this.endAngle);
     ctx.fillStyle = "red";
