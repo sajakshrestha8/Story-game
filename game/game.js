@@ -7,7 +7,8 @@ import Switch from "../objects/switch.js";
 import Obstacle from "../objects/obstacle.js";
 import LevelManager from "./levelManager.js";
 import { getFloorBeneath, hitCanvasX } from "./Physics.js";
-import { Floor } from "../objects/floor.js";
+import { circleRect, rectRect } from "../utils/collisions.js";
+import { drawPopup } from "./popup.js";
 
 class Game {
   constructor() {
@@ -21,7 +22,7 @@ class Game {
     this.character = new Man(0, 0, 50, 50);
     this.door = new Door(0, 0, 50, 80);
     this.switchs = new Switch(0, 0, 50, 20);
-    this.obstacle = new Obstacle(0, 0, 20);
+    this.obstacle = new Obstacle(100, 200, 20, 0, Math.PI * 2, true);
 
     this.levelManager = new LevelManager({
       door: this.door,
@@ -39,6 +40,7 @@ class Game {
   }
 
   update(dt) {
+    this.levelManager.floors.forEach((f) => f.update(dt, this.canvas.width));
     hitCanvasX(this.character, this.canvas);
 
     if (!this.state.showPopup) {
@@ -47,20 +49,100 @@ class Game {
       if (this.input.keys.up) this.character.jump();
     }
 
+    if (this.state.showPopup && this.input.keys.enter) {
+      this.handleEnter();
+      this.input.keys.enter = false;
+    }
+
     const floor = getFloorBeneath(this.character, this.levelManager.floors);
-    if (!floor && this.character.y > this.canvas.height - 50) {
+    this.door.update(dt);
+
+    if (floor && floor.speed > 0) {
+      this.character.x += floor.speed * floor.direction * dt;
+    }
+
+    if (
+      !floor &&
+      this.character.y >= this.canvas.height - this.character.height
+    ) {
       this.state.gameOver();
     }
 
+    if (!this.switchs.isOn && rectRect(this.character, this.switchs)) {
+      this.switchs.isOn = true;
+      this.state.doorOpen = true;
+      this.door.openDoor();
+    }
+
+    if (this.switchs.isOn && !this.state.showPopup) {
+      if (this.obstacle.x - this.obstacle.radius <= 0) {
+        this.obstacle.direction = "right";
+        this.currentLevel.speed += 50;
+      } else if (this.obstacle.x + this.obstacle.radius >= this.canvas.width) {
+        this.obstacle.direction = "left";
+        this.currentLevel.speed += 50;
+      }
+
+      const currentSpeed = this.currentLevel.speed || 150;
+      this.obstacle.moveObstacle(dt, this.obstacle.direction, currentSpeed);
+
+      if (
+        circleRect(this.obstacle, this.character) &&
+        !rectRect(this.character, this.door)
+      ) {
+        this.state.gameOver();
+      }
+    }
+
+    if (
+      this.switchs.isOn &&
+      circleRect(this.obstacle, this.character) &&
+      !rectRect(this.character, this.door)
+    ) {
+      this.state.gameOver();
+    }
+
+    if (
+      !this.state.showPopup &&
+      this.switchs.isOn &&
+      this.state.doorOpen &&
+      rectRect(this.character, this.door)
+    ) {
+      this.state.completeLevel();
+    }
+
     this.character.update(floor?.y ?? this.canvas.height, dt);
+  }
+
+  handleEnter() {
+    const wasLevelCompleted = this.state.levelCompleted;
+
+    if (wasLevelCompleted) {
+      const nextIndex = this.levelManager.index + 1;
+
+      if (nextIndex < this.levelManager.totalLevel) {
+        this.loadLevel(nextIndex);
+        this.state.reset();
+        this.switchs.isOn = false;
+      } else {
+        window.location.reload();
+      }
+    } else {
+      window.location.reload();
+    }
   }
 
   render() {
     this.renderer.clear();
     this.renderer.drawGame(this);
     this.renderer.drawLevelText(this.levelManager.index + 1);
-
     if (this.state.showPopup) {
+      drawPopup(this.ctx, this.canvas, this.state.levelCompleted);
+    }
+    if (this.switchs.isOn) {
+      this.renderer.drawHitbox(this.door);
+    }
+    if (!this.state.showPopup && this.state.levelCompleted) {
       drawPopup(this.ctx, this.canvas, this.state.levelCompleted);
     }
   }

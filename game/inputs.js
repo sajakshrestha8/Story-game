@@ -1,6 +1,6 @@
 export default class Input {
   constructor() {
-    this.keys = { left: false, right: false, up: false };
+    this.keys = { left: false, right: false, up: false, enter: false };
 
     window.addEventListener("keydown", (e) => this.onKeyDown(e));
     window.addEventListener("keyup", (e) => this.onKeyUp(e));
@@ -10,11 +10,13 @@ export default class Input {
     if (["ArrowLeft", "a"].includes(e.key)) this.keys.left = true;
     if (["ArrowRight", "d"].includes(e.key)) this.keys.right = true;
     if (["ArrowUp", "w", " "].includes(e.key)) this.keys.up = true;
+    if (e.key === "Enter") this.keys.enter = true;
   }
 
   onKeyUp(e) {
     if (["ArrowLeft", "a"].includes(e.key)) this.keys.left = false;
     if (["ArrowRight", "d"].includes(e.key)) this.keys.right = false;
     if (["ArrowUp", "w", " "].includes(e.key)) this.keys.up = false;
+    if (e.key === "Enter") this.keys.enter = false;
   }
 }

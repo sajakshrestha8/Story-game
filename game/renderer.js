@@ -23,4 +23,9 @@ export default class Renderer {
     this.ctx.font = "20px Arial";
     this.ctx.fillText(`Level: ${level}`, 20, 30);
   }
+
+  drawHitbox(obj) {
+    this.ctx.strokeStyle = "black";
+    this.ctx.strokeRect(obj.x, obj.y, obj.width, obj.height);
+  }
 }

@@ -15,6 +15,7 @@ export default class LevelManager {
   load(index) {
     this.index = index;
     const level = levels[index];
+    this.totalLevel = levels.length;
 
     this.updateFloors(level.floors);
 
