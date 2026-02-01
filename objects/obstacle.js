@@ -5,11 +5,13 @@ export default class Obstacle {
     this.startAngle = startAngle;
     this.endAngle = endAngle;
     this.radius = radius;
+    this.direction = "left";
     this.enabled = enabled;
   }
 
   createObstacle(enabled) {
     this.enabled = enabled;
+    console.log("enabled");
     if (this.enabled) {
       this.x = this.x - 10;
     } else {
