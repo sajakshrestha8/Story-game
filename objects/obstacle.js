@@ -5,11 +5,13 @@ export default class Obstacle {
     this.startAngle = startAngle;
     this.endAngle = endAngle;
     this.radius = radius;
+    this.direction = "left";
     this.enabled = enabled;
   }
 
   createObstacle(enabled) {
     this.enabled = enabled;
+    console.log("enabled");
     if (this.enabled) {
       this.x = this.x - 10;
     } else {
@@ -17,9 +19,12 @@ export default class Obstacle {
     }
   }
 
-  moveObstacle(deltaTime) {
-    const speed = 200;
-    this.x = this.x - speed * deltaTime;
+  moveObstacle(deltaTime, direction, speed) {
+    if (direction === "left") {
+      this.x = this.x - speed * deltaTime;
+    } else {
+      this.x = this.x + speed * deltaTime;
+    }
   }
 
   reset(x, y) {
