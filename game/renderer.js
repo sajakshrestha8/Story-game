@@ -8,7 +8,8 @@ export default class Renderer {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  drawGame({ door, obstacle, switchs, character, levelManager }) {
+  drawGame({ door, obstacle, switchs, character, levelManager, background }) {
+    background.draw(this.ctx);
     door.draw(this.ctx);
     obstacle.draw(this.ctx);
     switchs.draw(this.ctx);
