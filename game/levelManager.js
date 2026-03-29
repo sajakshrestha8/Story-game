@@ -22,14 +22,27 @@ export default class LevelManager {
 
     this.updateFloors(level.floors);
 
-    const groundY = this.floors[0].y;
+    const defaultGroundY = this.floors[0].y;
 
-    this.door.reset(level.door.x, groundY - this.door.height);
-    this.switchs.reset(level.switch.x, groundY - this.switchs.height);
-    this.obstacle.reset(level.obstacle.x, groundY - this.obstacle.radius);
+    /** Level JSON uses the same y as floor entries; world y includes horizon offset. */
+    const worldGround = (raw) => raw + FLOOR_Y_OFFSET;
+
+    const manGround =
+      level.man.groundY != null ? worldGround(level.man.groundY) : defaultGroundY;
+    const doorGround =
+      level.door.groundY != null ? worldGround(level.door.groundY) : defaultGroundY;
+    const switchGround =
+      level.switch.groundY != null ? worldGround(level.switch.groundY) : defaultGroundY;
+    const obstacleGround =
+      level.obstacle.groundY != null ? worldGround(level.obstacle.groundY) : defaultGroundY;
+
+    this.door.reset(level.door.x, doorGround - this.door.height);
+    this.switchs.reset(level.switch.x, switchGround - this.switchs.height);
+    this.switchs.isVisible = true;
+    this.obstacle.reset(level.obstacle.x, obstacleGround - this.obstacle.radius);
     this.character.reset(
       level.man.x,
-      groundY - this.character.height + this.character.feetInset
+      manGround - this.character.height + this.character.feetInset
     );
 
     return level;

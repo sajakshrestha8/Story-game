@@ -32,6 +32,7 @@ export default class Obstacle {
   reset(x, y) {
     this.x = x;
     this.y = y;
+    this.isVisible = false;
   }
 
   draw(ctx) {

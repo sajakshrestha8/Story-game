@@ -48,9 +48,6 @@ class Game {
 
     this.currentLevel = this.levelManager.load(0);
     this.lastTime = 0;
-
-    this.loadLevel(0);
-    this.lastTime = 0;
   }
 
   update(dt) {
@@ -151,7 +148,7 @@ class Game {
   render() {
     this.renderer.clear();
     this.renderer.drawGame(this);
-    this.renderer.drawLevelText(this.levelManager.index + 1);
+    this.renderer.drawLevelText(this.levelManager.index + 1, this.currentLevel);
     if (this.state.showPopup) {
       drawPopup(this.ctx, this.canvas, this.state.levelCompleted);
     }
@@ -183,5 +180,4 @@ class Game {
 }
 
 const game = new Game();
-game.loadLevel(0);
 game.start();
