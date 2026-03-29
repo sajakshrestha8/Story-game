@@ -7,6 +7,7 @@ export default class Obstacle {
     this.radius = radius;
     this.direction = "left";
     this.enabled = enabled;
+    this.isVisible = false;
   }
 
   createObstacle(enabled) {
@@ -20,6 +21,7 @@ export default class Obstacle {
   }
 
   moveObstacle(deltaTime, direction, speed) {
+    this.isVisible = true;
     if (direction === "left") {
       this.x = this.x - speed * deltaTime;
     } else {
@@ -33,6 +35,7 @@ export default class Obstacle {
   }
 
   draw(ctx) {
+    if (!this.isVisible) return;
     const r = this.radius;
     const cx = Math.round(this.x);
     const cy = Math.round(this.y);
@@ -46,7 +49,13 @@ export default class Obstacle {
     ctx.fill();
 
     ctx.beginPath();
-    ctx.arc(Math.round(cx - r * 0.35), Math.round(cy - r * 0.35), r * 0.35, 0, Math.PI * 2);
+    ctx.arc(
+      Math.round(cx - r * 0.35),
+      Math.round(cy - r * 0.35),
+      r * 0.35,
+      0,
+      Math.PI * 2,
+    );
     ctx.fillStyle = "#fca5a5";
     ctx.fill();
 
