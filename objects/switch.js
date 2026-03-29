@@ -46,5 +46,6 @@ export default class Switch {
   reset(x, y) {
     this.x = x;
     this.y = y;
+    this.isVisible = false;
   }
 }
