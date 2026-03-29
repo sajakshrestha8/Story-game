@@ -7,6 +7,11 @@ export default class Input {
   }
 
   onKeyDown(e) {
+    if (
+      ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " "].includes(e.key)
+    ) {
+      e.preventDefault();
+    }
     if (["ArrowLeft", "a"].includes(e.key)) this.keys.left = true;
     if (["ArrowRight", "d"].includes(e.key)) this.keys.right = true;
     if (["ArrowUp", "w", " "].includes(e.key)) this.keys.up = true;

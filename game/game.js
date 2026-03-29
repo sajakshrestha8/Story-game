@@ -33,7 +33,7 @@ class Game {
     this.switchs = new Switch(0, 0, 50, 20);
     this.obstacle = new Obstacle(100, 200, 20, 0, Math.PI * 2, true);
     this.background = new Background(
-      "../assests/PNG/summer 3/Summer3.png",
+      "../assests/PNG/summer 3",
       this.canvas.width,
       this.canvas.height
     );
@@ -54,6 +54,8 @@ class Game {
   }
 
   update(dt) {
+    this.character.isMoving = false;
+
     this.levelManager.floors.forEach((f) => f.update(dt, this.canvas.width));
     hitCanvasX(this.character, this.canvas);
 

@@ -4,14 +4,17 @@ export function getFloorBeneath(character, floors) {
   let closest = null;
   let minDist = Infinity;
 
+  const hx = character.x + (character.hitInsetX ?? 0);
+  const hw = character.hitWidth ?? character.width;
+
   for (const floor of floors) {
-    const overlap =
-      character.x + character.width > floor.x &&
-      character.x < floor.x + floor.width;
+    const overlap = hx + hw > floor.x && hx < floor.x + floor.width;
 
     if (!overlap) continue;
 
-    const dist = floor.y - (character.y + character.height);
+    const feet =
+      character.y + character.height - (character.feetInset ?? 0);
+    const dist = floor.y - feet;
     if (dist >= -10 && dist < minDist) {
       minDist = dist;
       closest = floor;
