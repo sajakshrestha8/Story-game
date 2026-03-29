@@ -9,6 +9,7 @@ import LevelManager from "./levelManager.js";
 import { getFloorBeneath, hitCanvasX } from "./Physics.js";
 import { circleRect, rectRect } from "../utils/collisions.js";
 import { drawPopup } from "./popup.js";
+import Background from "../objects/background.js";
 
 class Game {
   constructor() {
@@ -19,10 +20,23 @@ class Game {
     this.input = new Input();
     this.renderer = new Renderer(this.ctx, this.canvas);
 
-    this.character = new Man(0, 0, 50, 50);
+    this.character = new Man(
+      0,
+      0,
+      150,
+      150,
+      "../assests/Swordsman_lvl1_Idle_without_shadow.png",
+      64,
+      64
+    );
     this.door = new Door(0, 0, 50, 80);
     this.switchs = new Switch(0, 0, 50, 20);
     this.obstacle = new Obstacle(100, 200, 20, 0, Math.PI * 2, true);
+    this.background = new Background(
+      "../assests/PNG/summer 3",
+      this.canvas.width,
+      this.canvas.height
+    );
 
     this.levelManager = new LevelManager({
       door: this.door,
@@ -34,12 +48,11 @@ class Game {
 
     this.currentLevel = this.levelManager.load(0);
     this.lastTime = 0;
-
-    this.loadLevel(0);
-    this.lastTime = 0;
   }
 
   update(dt) {
+    this.character.isMoving = false;
+
     this.levelManager.floors.forEach((f) => f.update(dt, this.canvas.width));
     hitCanvasX(this.character, this.canvas);
 
@@ -135,7 +148,7 @@ class Game {
   render() {
     this.renderer.clear();
     this.renderer.drawGame(this);
-    this.renderer.drawLevelText(this.levelManager.index + 1);
+    this.renderer.drawLevelText(this.levelManager.index + 1, this.currentLevel);
     if (this.state.showPopup) {
       drawPopup(this.ctx, this.canvas, this.state.levelCompleted);
     }
@@ -167,5 +180,4 @@ class Game {
 }
 
 const game = new Game();
-game.loadLevel(0);
 game.start();

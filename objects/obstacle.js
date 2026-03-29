@@ -7,6 +7,7 @@ export default class Obstacle {
     this.radius = radius;
     this.direction = "left";
     this.enabled = enabled;
+    this.isVisible = false;
   }
 
   createObstacle(enabled) {
@@ -20,6 +21,7 @@ export default class Obstacle {
   }
 
   moveObstacle(deltaTime, direction, speed) {
+    this.isVisible = true;
     if (direction === "left") {
       this.x = this.x - speed * deltaTime;
     } else {
@@ -30,12 +32,40 @@ export default class Obstacle {
   reset(x, y) {
     this.x = x;
     this.y = y;
+    this.isVisible = false;
   }
 
   draw(ctx) {
+    if (!this.isVisible) return;
+    const r = this.radius;
+    const cx = Math.round(this.x);
+    const cy = Math.round(this.y);
+
+    ctx.save();
+    ctx.imageSmoothingEnabled = false;
+
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, this.startAngle, this.endAngle);
-    ctx.fillStyle = "red";
+    ctx.arc(cx, cy, r, this.startAngle, this.endAngle);
+    ctx.fillStyle = "#b91c1c";
     ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(
+      Math.round(cx - r * 0.35),
+      Math.round(cy - r * 0.35),
+      r * 0.35,
+      0,
+      Math.PI * 2,
+    );
+    ctx.fillStyle = "#fca5a5";
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, this.startAngle, this.endAngle);
+    ctx.strokeStyle = "#450a0a";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.restore();
   }
 }
